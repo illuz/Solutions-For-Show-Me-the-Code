@@ -2,7 +2,8 @@
 
 ### The Problems description:
 
-[Chinese Version](https://github.com/illuz/show-me-the-code/blob/master/README.md)  
+[Chinese Version](./[Chinese]Python练习册，每天一个小程序.md)  
+[English Version](./[English]Python-Workbooks,One-Program-One-Day.md)  
 
 
 ### There are some notes:
