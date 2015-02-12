@@ -208,16 +208,16 @@ Other operations on individual fields:
 
 Redis Sets are unordered collections of strings.  
 
-`SADD` adds new elements to a set.  
-`SMEMBERS` Get all the members in a set  
-`SISMEMBER`   
-`SPOP` Remove and return a random member from a set   
-`SRANDMEMBER` Get one or multiple random members from a set   
-`SUNION` Add multiple sets  
-`SUNIONSTORE`  
-`SINTER` Intersect multiple sets  
-`SINTERSTORE`
-`SCARD` Get the number of members in a set  
+- `SADD` adds new elements to a set.  
+- `SMEMBERS` Get all the members in a set (because set haven't method like RANGE)  
+- `SISMEMBER`   
+- `SPOP` Remove and return a random member from a set   
+- `SRANDMEMBER` Get one or multiple random members from a set   
+- `SUNION` Add multiple sets  
+- `SUNIONSTORE`  
+- `SINTER` Intersect multiple sets  
+- `SINTERSTORE`
+- `SCARD` Get the number of members in a set  
 
 
 
@@ -226,11 +226,66 @@ Redis Sets are unordered collections of strings.
 Like sets, sorted sets are composed of unique, non-repeating string elements.  
 
 
+**base**
+
+- `ZADD`
+- `ZCARD`
+- `ZINCRBY`  
+
+**count**
+
+- `ZCOUNT`
+- `ZLEXCOUNT` Count the number of members in a sorted set between a given lexicographical range  
+
+**range**
+
+- `ZRANGE` Return a range of members in a sorted set, by index  
+- `ZREVRANGE`
+- `ZRANGEBYLEX` Return a range of members in a sorted set, by lexicographical range  
+- `ZREVRANGEBYLEX`
+- `ZRANGEBYSCORE` Return a range of members in a sorted set, by score  
+- `ZREVRANGEBYSCORE`  
+
+**check if is member of a set**
+
+- `ZRANK`: Determine the index of a member in a sorted set.  
+- `ZREVRANK`  
+
+**remove**
+
+- `ZREM` Remove one or more members from a sorted set  
+- `ZREMRANGEBYLEX` Remove all members in a sorted set within the given lexicographical range  
+- `ZREMRANGEBYRANK`
+- `ZREMRANGEBYSCORE`  
+
+
+**2 ways to check if a member is in one key**
+
+- `ZRANK`: Determine the index of a member in a sorted set.  
+- `ZREVRANK`
+- `ZSCORE`: Get the score associated with the given member in a sorted set  
+
+**set operation**
+
+- `ZINTERSTORE`
+- `ZUNIONSTORE`
 
 
 
+#### Bitmaps
+
+Bitmaps are a set of bit-oriented operations defined on the String type.  
+
+1. binary safe
+2. maximum length is 512 MB
+3. up to 232 different bits
 
 
+- `SETBIT`
+- `GETBIT`
+- `BITCOUNT` reporting the number of bits set to 1.
+- `BITPOS` Find first bit set or clear in a string  
+- `BITOP`  bitwise operation between multiple keys: AND, OR, XOR and NOT  
 
 
 
