@@ -1,0 +1,13 @@
+Python Databases Notes - MySQL
+install and setting _mysql module 
+The _mysql module implements the MySQL C API directly.
+Not compatible.  
+Fetch version 
+MySQLdb module MySQLdb is a thin Python wrapper around _mysql.
+Fetch version.
+Create a table and populate it with some data 
+Retrieving data 
+Some resources: 
+MySQLdb User's Guide python-mysqldb API
+StackOverflow-How do I connect to a MySQL Database in Python?
+Good start:Zencode (I use this :smile:)
