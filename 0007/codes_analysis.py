@@ -20,6 +20,9 @@ import sys, os
 # 3. 'while (1); /* unlimited loop'     -> 1 code line, 1 comment line
 # 4. 'This style is ugly.*/ while (1);' -> 1 code line, 1 comment line
 
+# There are some bugs here:
+# '/* comment */'
+
 
 # define the language and comment style
 postfix_to_style = {
@@ -39,59 +42,89 @@ postfix_to_style = {
 }
 comment_styles = {
     'style_name': ('inline', 'left_block', 'right_block'),
-    'c': (r'#', r'"""', r"'''"),
-    'python': (r'//', r'/*', r'*/'),
-    'html': (None, r'<!--', r'-->'),
-    'bash': (r'#', None, None) 
+    'python': (r'#', r'"""', r"'''"),
+    'c': (r'//', r'/*', r'*/'),
+    'html': ('', r'<!--', r'-->'),
+    'bash': (r'#', '', '') 
 }
 
 
 
 def analysis_single_file(file):
     """ return (the numbers of code, blank line, comment)"""
-    print file, ':'
+    print file, ':',
     code, blank_line, comment = 0, 0, 0
     try:
         with open(file, 'r') as text:
-            style = comment_styles[
-                postfix_to_style.get(os.path.splitext(file)[1], '.c')
-                ]
-            print style
-            # some flags
-            block = False
-            for line in text:
-                words = line.split()
+            postfix = os.path.splitext(file)[1]
+            if postfix not in postfix_to_style:
+                print 'Not code file'
+                return 0, 0, 0
+            style = comment_styles[ postfix_to_style[postfix] ]
 
-                if words is None:
+            # the flag of block
+            block = False
+
+            for line in text:
+                line = line.strip()
+                # print line
+
+                if line == '':
                     blank_line += 1
                     continue
 
                 if block:
                     comment += 1
-                    if words[-1] == style[2]:
-                        blcok = False
-                    elif style[2] in words:
+
+                    # 'cm */'
+                    if style[2] == line[-len(style[2]):]:
+                        block = False
+                    # 'cm */ code'
+                    elif style[2] in line:
                         block = False
                         code += 1
                 else:
-                    if style[0] == words[0]:
+                    # '// cm'
+                    if style[0] == line[:len(style[0])]:
                         comment += 1
-                    elif style[1] == words[0]:
+                    # '/* cm'
+                    elif style[1] == line[:len(style[1])]:
                         block = True
                         comment += 1
+                    else:
+                        code += 1
+                        find_inline = line.find(style[0])
+                        find_block = line.find(style[1])
+                        if find_inline != -1 and find_block == -1:
+                            # 'code // cm'
+                            comment += 1
+                        elif find_inline == -1 and find_block != -1:
+                            # 'code /* cm'
+                            comment += 1
+                            block = True
+                        elif find_inline > find_block:
+                            # 'code // cm /* cm'
+                            comment += 1
+                        elif find_inline > find_block:
+                            # 'code /* cm // cm'
+                            comment += 1
+                            block = True
 
+                # print code, blank_line, comment
     except IOError:
         print 'Cannot open file', file
+    print code, blank_line, comment
     return code, blank_line, comment
 
 def analysis_folder(folder):
     code, blank_line, comment = 0, 0, 0
-    for root, dirs, files in os.walk('.'):
+    for root, dirs, files in os.walk(folder):
         for file in files:
             _cd, _bl, _cm = analysis_single_file(root + '/' + file)
             code += _cd
             blank_line += _bl
             comment += _cm
+    print 'Total:', code, 'codes,', blank_line, 'blank lines,', comment, 'comments'
 
 def main():
     if len(sys.argv) != 2:
